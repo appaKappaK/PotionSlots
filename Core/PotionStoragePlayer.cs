@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -24,6 +24,7 @@ namespace PotionSlots.Core
         {
             On_Player.QuickHeal_GetItemToUse += PickLifeSlot;
             On_Player.QuickMana_GetItemToUse += PickManaSlot;
+            On_Player.GetItem += RouteItemToSlot;
         }
 
         private Item PickLifeSlot(On_Player.orig_QuickHeal_GetItemToUse orig, Player self)
@@ -44,6 +45,36 @@ namespace PotionSlots.Core
             return orig(self);
         }
 
+        private static Item RouteItemToSlot(On_Player.orig_GetItem orig, Player self, int whoAmI, Item newItem, GetItemSettings settings)
+        {
+            var p = self.GetModPlayer<PotionStoragePlayer>();
+
+            if (newItem.healLife > 0)
+                TryFillSlot(ref p.lifeSlot, newItem);
+            else if (newItem.healMana > 0)
+                TryFillSlot(ref p.manaSlot, newItem);
+            else if (newItem.type == ItemID.WormholePotion)
+                TryFillSlot(ref p.wormholeSlot, newItem);
+
+            return orig(self, whoAmI, newItem, settings);
+        }
+
+        private static void TryFillSlot(ref Item slot, Item incoming)
+        {
+            if (!slot.IsAir && slot.type == incoming.type && slot.stack < slot.maxStack)
+            {
+                int transferable = Math.Min(incoming.stack, slot.maxStack - slot.stack);
+                slot.stack += transferable;
+                incoming.stack -= transferable;
+
+                if (incoming.stack <= 0)
+                {
+                    incoming.TurnToAir();
+                    SoundEngine.PlaySound(SoundID.Grab);
+                }
+            }
+        }
+
         public override void SaveData(TagCompound tag)
         {
             tag.Add("life", lifeSlot);
@@ -56,88 +87,6 @@ namespace PotionSlots.Core
             lifeSlot = tag.Get<Item>("life");
             manaSlot = tag.Get<Item>("mana");
             wormholeSlot = tag.Get<Item>("wormhole");
-        }
-
-        public override bool OnPickup(Item item)
-        {
-            bool pickedUp = false;
-
-            if (item.healLife > 0)
-            {
-                if (lifeSlot.IsAir || (lifeSlot.type == item.type && lifeSlot.stack < lifeSlot.maxStack))
-                {
-                    if (lifeSlot.IsAir)
-                    {
-                        lifeSlot = item.Clone();
-                        lifeSlot.stack = 0;
-                    }
-
-                    int transferableAmount = Math.Min(item.stack, lifeSlot.maxStack - lifeSlot.stack);
-                    lifeSlot.stack += transferableAmount;
-                    item.stack -= transferableAmount;
-                    pickedUp = true;
-
-                    if (item.stack <= 0)
-                    {
-                        item.TurnToAir();
-                        SoundEngine.PlaySound(SoundID.Grab);
-                        return false;
-                    }
-                }
-            }
-            else if (item.healMana > 0)
-            {
-                if (manaSlot.IsAir || (manaSlot.type == item.type && manaSlot.stack < manaSlot.maxStack))
-                {
-                    if (manaSlot.IsAir)
-                    {
-                        manaSlot = item.Clone();
-                        manaSlot.stack = 0;
-                    }
-
-                    int transferableAmount = Math.Min(item.stack, manaSlot.maxStack - manaSlot.stack);
-                    manaSlot.stack += transferableAmount;
-                    item.stack -= transferableAmount;
-                    pickedUp = true;
-
-                    if (item.stack <= 0)
-                    {
-                        item.TurnToAir();
-                        SoundEngine.PlaySound(SoundID.Grab);
-                        return false;
-                    }
-                }
-            }
-            else if (item.type == ItemID.WormholePotion)
-            {
-                if (wormholeSlot.IsAir || (wormholeSlot.type == item.type && wormholeSlot.stack < wormholeSlot.maxStack))
-                {
-                    if (wormholeSlot.IsAir)
-                    {
-                        wormholeSlot = item.Clone();
-                        wormholeSlot.stack = 0;
-                    }
-
-                    int transferableAmount = Math.Min(item.stack, wormholeSlot.maxStack - wormholeSlot.stack);
-                    wormholeSlot.stack += transferableAmount;
-                    item.stack -= transferableAmount;
-                    pickedUp = true;
-
-                    if (item.stack <= 0)
-                    {
-                        item.TurnToAir();
-                        SoundEngine.PlaySound(SoundID.Grab);
-                        return false;
-                    }
-                }
-            }
-
-            if (pickedUp)
-            {
-                SoundEngine.PlaySound(SoundID.Grab);
-            }
-
-            return true;
         }
     }
 }
