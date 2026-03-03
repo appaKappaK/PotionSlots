@@ -1,22 +1,31 @@
-## Potion Slots Mod
+## Potion Slots
 
-This mod adds 3 new slots into the game which are the following:
+Adds dedicated inventory slots for your potions so they stay out of your hotbar.
 
 ![Healing Potions Slot](https://imgur.com/3ZCgnR1.png)
-**Healing Potions Slot** - You can place any healing potion inside.
+**Healing Slot** - Holds any healing potion. Use your Quick Heal key to consume it directly.
 
 ![Mana Potions Slot](https://i.imgur.com/EcCMDFY.png)
-**Mana Potions Slot** - You can place any mana potion inside.
+**Mana Slot** - Holds any mana potion. Use your Quick Mana key to consume it directly.
 
 ![Wormhole Potions Slot](https://i.imgur.com/WwQBqNl.png)
-**Wormhole Potions Slot** - You can place any wormhole potion inside.
+**Utility Slot** - Holds Wormhole or Recall Potions by default. Can be switched to General Buff mode in the config to hold any buff potion (Ironskin, Swiftness, etc.) instead.
 
-🛈 Modded potions are supported.
+### Features
 
-[Steam link](https://steamcommunity.com/sharedfiles/filedetails/?id=3234262967)
+- **Auto-collect** - Potions already in a slot are automatically topped up when you pick up, craft, or fish the same type
+- **Modded potions supported** - Any modded healing or mana potion works in the appropriate slot
+- **Config options** (Mod Settings in-game):
+  - Show/hide individual slots
+  - Switch the utility slot between Wormhole/Recall mode and General Buff mode
+  - Horizontal and vertical offset to reposition the panel (-300 to 300)
 
-**Credits**: scalarvector - taking the commission
+### Compatibility
+
+Requires tModLoader 1.4.4. Built on net8.
+
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3234262967)
+
+**Credits**: Dice (original mod) · scalarvector (commission art)
 
 Join our Discord for updates/announcements: [https://discord.gg/te6MPuWbtD](https://discord.gg/te6MPuWbtD)
-
-> [tModLoader] Developed By Dice
