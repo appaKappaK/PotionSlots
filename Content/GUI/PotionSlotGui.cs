@@ -18,7 +18,16 @@ namespace PotionSlots.Content.GUI
         private ManaSlot mana;
         private WormholeSlot wormhole;
 
-        public override bool Visible => Main.playerInventory;
+        private bool _cachedShowHealing;
+        private bool _cachedShowMana;
+        private bool _cachedShowWormhole;
+        private int _cachedOffsetX;
+        private int _cachedOffsetY;
+
+        public override bool Visible => Main.playerInventory &&
+            (PotionSlotsConfig.Instance.ShowHealingSlot ||
+             PotionSlotsConfig.Instance.ShowManaSlot ||
+             PotionSlotsConfig.Instance.ShowWormholeSlot);
 
         public override int InsertionIndex(List<GameInterfaceLayer> layers)
         {
@@ -27,17 +36,23 @@ namespace PotionSlots.Content.GUI
 
         public override void OnInitialize()
         {
+            var cfg = PotionSlotsConfig.Instance;
+            _cachedShowHealing = cfg.ShowHealingSlot;
+            _cachedShowMana = cfg.ShowManaSlot;
+            _cachedShowWormhole = cfg.ShowWormholeSlot;
+            _cachedOffsetX = cfg.OffsetX;
+            _cachedOffsetY = cfg.OffsetY;
+
             life = new LifeSlot();
             mana = new ManaSlot();
             wormhole = new WormholeSlot();
 
-            SetSlotProperties(life, 571, 105);
-            SetSlotProperties(mana, 571, 138);
-            SetSlotProperties(wormhole, 571, 172);
+            float left = 571 + cfg.OffsetX;
+            float top = 105 + cfg.OffsetY;
 
-            Append(life);
-            Append(mana);
-            Append(wormhole);
+            if (cfg.ShowHealingSlot) { SetSlotProperties(life, left, top); Append(life); top += 33; }
+            if (cfg.ShowManaSlot)    { SetSlotProperties(mana, left, top); Append(mana); top += 33; }
+            if (cfg.ShowWormholeSlot){ SetSlotProperties(wormhole, left, top); Append(wormhole); }
         }
 
         private void SetSlotProperties(UIElement slot, float left, float top)
@@ -50,8 +65,12 @@ namespace PotionSlots.Content.GUI
 
         public override void SafeUpdate(GameTime gameTime)
         {
-            // Debug: Re-initialize when controlHook is pressed
-            if (Main.LocalPlayer.controlHook)
+            var cfg = PotionSlotsConfig.Instance;
+            if (cfg.ShowHealingSlot != _cachedShowHealing ||
+                cfg.ShowManaSlot    != _cachedShowMana    ||
+                cfg.ShowWormholeSlot!= _cachedShowWormhole||
+                cfg.OffsetX         != _cachedOffsetX     ||
+                cfg.OffsetY         != _cachedOffsetY)
             {
                 RemoveAllChildren();
                 OnInitialize();
@@ -60,8 +79,9 @@ namespace PotionSlots.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            var cfg = PotionSlotsConfig.Instance;
             var font = Terraria.GameContent.FontAssets.MouseText.Value;
-            spriteBatch.DrawString(font, "Potions", new Vector2(570, 85), Main.MouseTextColorReal, 0f, Vector2.Zero, 0.7f, 0, 0);
+            spriteBatch.DrawString(font, "Potions", new Vector2(570 + cfg.OffsetX, 85 + cfg.OffsetY), Main.MouseTextColorReal, 0f, Vector2.Zero, 0.7f, 0, 0);
 
             base.Draw(spriteBatch);
         }
@@ -199,7 +219,7 @@ namespace PotionSlots.Content.GUI
     {
         public override ref Item item => ref Main.LocalPlayer.GetModPlayer<PotionStoragePlayer>().wormholeSlot;
 
-        public override Func<Item, bool> isValid => (item) => item.type == ItemID.WormholePotion;
+        public override Func<Item, bool> isValid => (item) => item.type == ItemID.WormholePotion || item.type == ItemID.RecallPotion;
 
         public override string Texture => "PotionSlots/Assets/wormhole_sprite";
         public override string TextureFilled => "PotionSlots/Assets/wormholebg";

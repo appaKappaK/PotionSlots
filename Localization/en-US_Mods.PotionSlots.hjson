@@ -6,3 +6,34 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+Configs: {
+	PotionSlotsConfig: {
+		DisplayName: Potion Slots Config
+
+		ShowHealingSlot: {
+			Label: Show Healing Slot
+			Tooltip: ""
+		}
+
+		ShowManaSlot: {
+			Label: Show Mana Slot
+			Tooltip: ""
+		}
+
+		ShowWormholeSlot: {
+			Label: Show Wormhole/Recall Slot
+			Tooltip: Also accepts Recall Potions for singleplayer
+		}
+
+		OffsetX: {
+			Label: Horizontal Offset
+			Tooltip: Shift all slots left or right
+		}
+
+		OffsetY: {
+			Label: Vertical Offset
+			Tooltip: Shift all slots up or down
+		}
+	}
+}
