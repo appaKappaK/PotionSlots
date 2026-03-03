@@ -1,17 +1,24 @@
-using System;
+using MonoMod.RuntimeDetour;
+using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ID;
 using Terraria.Audio;
 
-namespace PotionSlots.Core
+namespace PotionSlotsUpdated.Core
 {
     internal class PotionStoragePlayer : ModPlayer
     {
         public Item lifeSlot;
         public Item manaSlot;
         public Item wormholeSlot;
+
+        private static Hook _qwkHas30Hook;
+        private static Hook _qwkHasOneHook;
+
+        private delegate bool Del_Has30WormholePotion(object self, Player player, int requiredAmount);
+        private delegate bool Del_HasWormholePotion(object self, Player player);
 
         public override void Initialize()
         {
@@ -24,7 +31,73 @@ namespace PotionSlots.Core
         {
             On_Player.QuickHeal_GetItemToUse += PickLifeSlot;
             On_Player.QuickMana_GetItemToUse += PickManaSlot;
+            On_Player.QuickBuff += UseWormholeSlotOnQuickBuff;
             On_Player.GetItem += RouteItemToSlot;
+
+            // QuickWormholeKeyBind compatibility: hook its inventory search to also check our slot
+            if (ModLoader.TryGetMod("QuickWormholeKeyBind", out Mod qwkMod))
+            {
+                var wormholeBindType = qwkMod.GetType().Assembly.GetType("QuickWormholeKeyBind.WormholeBind");
+                _qwkHas30Hook = new Hook(
+                    wormholeBindType.GetMethod("Has30WormholePotion", BindingFlags.NonPublic | BindingFlags.Instance),
+                    (Del_Has30WormholePotion orig, object self, Player player, int requiredAmount) =>
+                        orig(self, player, requiredAmount) || QWK_CheckSlotHas30(player, requiredAmount)
+                );
+                _qwkHasOneHook = new Hook(
+                    wormholeBindType.GetMethod("HasWormholePotion", BindingFlags.NonPublic | BindingFlags.Instance),
+                    (Del_HasWormholePotion orig, object self, Player player) =>
+                        orig(self, player) || QWK_ConsumeSlotPotion(player)
+                );
+            }
+        }
+
+        public override void Unload()
+        {
+            _qwkHas30Hook?.Dispose();
+            _qwkHas30Hook = null;
+            _qwkHasOneHook?.Dispose();
+            _qwkHasOneHook = null;
+        }
+
+        private static bool QWK_CheckSlotHas30(Player player, int requiredAmount)
+        {
+            var p = player.GetModPlayer<PotionStoragePlayer>();
+            return !PotionSlotsConfig.Instance.WormholeSlotAsBuff
+                && p.wormholeSlot.type == ItemID.WormholePotion
+                && p.wormholeSlot.stack >= requiredAmount;
+        }
+
+        private static bool QWK_ConsumeSlotPotion(Player player)
+        {
+            var p = player.GetModPlayer<PotionStoragePlayer>();
+            if (!PotionSlotsConfig.Instance.WormholeSlotAsBuff
+                && p.wormholeSlot.type == ItemID.WormholePotion
+                && p.wormholeSlot.stack > 0)
+            {
+                p.wormholeSlot.stack--;
+                if (p.wormholeSlot.stack <= 0)
+                    p.wormholeSlot.TurnToAir();
+                return true;
+            }
+            return false;
+        }
+
+        private static void UseWormholeSlotOnQuickBuff(On_Player.orig_QuickBuff orig, Player self)
+        {
+            orig(self);
+
+            if (!PotionSlotsConfig.Instance.WormholeSlotAsBuff) return;
+
+            var p = self.GetModPlayer<PotionStoragePlayer>();
+            var item = p.wormholeSlot;
+
+            if (item.IsAir || item.buffType <= 0 || !item.consumable) return;
+            if (self.HasBuff(item.buffType)) return;
+
+            self.AddBuff(item.buffType, item.buffTime);
+            item.stack--;
+            if (item.stack <= 0)
+                item.TurnToAir();
         }
 
         private Item PickLifeSlot(On_Player.orig_QuickHeal_GetItemToUse orig, Player self)
@@ -63,17 +136,22 @@ namespace PotionSlots.Core
 
         private static void TryFillSlot(ref Item slot, Item incoming)
         {
-            if (!slot.IsAir && slot.type == incoming.type && slot.stack < slot.maxStack)
+            if (slot.IsAir)
             {
-                int transferable = Math.Min(incoming.stack, slot.maxStack - slot.stack);
-                slot.stack += transferable;
-                incoming.stack -= transferable;
-
-                if (incoming.stack <= 0)
+                if (PotionSlotsConfig.Instance.AutoFillEmptySlots)
                 {
+                    slot = incoming.Clone();
                     incoming.TurnToAir();
                     SoundEngine.PlaySound(SoundID.Grab);
                 }
+                return;
+            }
+
+            if (slot.type == incoming.type)
+            {
+                slot.stack += incoming.stack;
+                incoming.TurnToAir();
+                SoundEngine.PlaySound(SoundID.Grab);
             }
         }
 

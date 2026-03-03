@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.UI;
 
-namespace PotionSlots.Core.Loaders.UILoading
+namespace PotionSlotsUpdated.Core.Loaders.UILoading
 {
 	/// <summary>
 	/// Automatically loads SmartUIStates ala IoC.

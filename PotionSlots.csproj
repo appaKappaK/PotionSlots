@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
-    <AssemblyName>PotionSlots</AssemblyName>
+    <AssemblyName>PotionSlotsUpdated</AssemblyName>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -13,11 +13,10 @@
     <None Remove="Assets\wormhole_sprite.png" />
   </ItemGroup>
   <!-- Remove older duplicate MonoMod versions shipped alongside newer ones in tML Libraries -->
-  <Target Name="RemoveDuplicateMonoMod" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Reference Remove="@(Reference)" Condition="$([System.String]::Copy('%(Identity)').Contains('monomod.runtimedetour/25.2.3')) Or $([System.String]::Copy('%(Identity)').Contains('monomod.runtimedetour\25.2.3'))" />
-      <Reference Remove="@(Reference)" Condition="$([System.String]::Copy('%(Identity)').Contains('monomod.core/1.2.3')) Or $([System.String]::Copy('%(Identity)').Contains('monomod.core\1.2.3'))" />
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <Reference Remove="$(tMLLibraryPath)/MonoMod.Runtime.Detour/21.1.2.2/**" />
+    <Reference Remove="$(tMLLibraryPath)/monomod.runtimedetour/25.2.3/**" />
+    <Reference Remove="$(tMLLibraryPath)/monomod.core/1.2.3/**" />
+  </ItemGroup>
 
 </Project>

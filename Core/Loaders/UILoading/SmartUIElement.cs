@@ -1,6 +1,6 @@
 ﻿using Terraria.UI;
 
-namespace PotionSlots.Core.Loaders.UILoading
+namespace PotionSlotsUpdated.Core.Loaders.UILoading
 {
 	/// <summary>
 	/// Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements

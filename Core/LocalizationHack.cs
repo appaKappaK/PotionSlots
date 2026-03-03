@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Terraria.Localization;
 
-namespace PotionSlots.Core
+namespace PotionSlotsUpdated.Core
 {
 	internal class LocalizationRewriter : ModSystem
 	{

@@ -1,4 +1,4 @@
-using PotionSlots.Core.Loaders.UILoading;
+using PotionSlotsUpdated.Core.Loaders.UILoading;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent.UI.Elements;
 
-namespace PotionSlots.Content.GUI
+namespace PotionSlotsUpdated.Content.GUI
 {
     public class PotionSlotGui : SmartUIState
     {
@@ -107,6 +107,8 @@ namespace PotionSlots.Content.GUI
 
         public override void SafeClick(UIMouseEvent evt)
         {
+            if (Main.LocalPlayer.talkNPC != -1) return;
+
             if (!Main.mouseItem.IsAir && isValid(Main.mouseItem) && NoItem)
             {
                 item = Main.mouseItem.Clone();
@@ -129,17 +131,8 @@ namespace PotionSlots.Content.GUI
                 }
                 else
                 {
-                    var joined = item.stack + Main.mouseItem.stack;
-                    if (joined > item.maxStack)
-                    {
-                        item.stack = item.maxStack;
-                        Main.mouseItem.stack = joined - item.maxStack;
-                    }
-                    else
-                    {
-                        item.stack = joined;
-                        Main.mouseItem.TurnToAir();
-                    }
+                    item.stack += Main.mouseItem.stack;
+                    Main.mouseItem.TurnToAir();
                 }
                 SoundEngine.PlaySound(SoundID.Grab);
             }
@@ -147,6 +140,8 @@ namespace PotionSlots.Content.GUI
 
         public override void SafeRightClick(UIMouseEvent evt)
         {
+            if (Main.LocalPlayer.talkNPC != -1) return;
+
             if (Main.mouseItem.IsAir && !NoItem)
             {
                 var temp = item.Clone();
@@ -201,8 +196,8 @@ namespace PotionSlots.Content.GUI
 
         public override Func<Item, bool> isValid => (item) => item.healLife > 0;
 
-        public override string Texture => "PotionSlots/Assets/healing_sprite";
-        public override string TextureFilled => "PotionSlots/Assets/healingbg";
+        public override string Texture => "PotionSlotsUpdated/Assets/healing_sprite";
+        public override string TextureFilled => "PotionSlotsUpdated/Assets/healingbg";
     }
 
     public class ManaSlot : PotionSlot
@@ -211,8 +206,8 @@ namespace PotionSlots.Content.GUI
 
         public override Func<Item, bool> isValid => (item) => item.healMana > 0;
 
-        public override string Texture => "PotionSlots/Assets/mana_sprite";
-        public override string TextureFilled => "PotionSlots/Assets/manabg";
+        public override string Texture => "PotionSlotsUpdated/Assets/mana_sprite";
+        public override string TextureFilled => "PotionSlotsUpdated/Assets/manabg";
     }
 
     public class WormholeSlot : PotionSlot
@@ -223,7 +218,7 @@ namespace PotionSlots.Content.GUI
             ? (item) => item.consumable && item.buffType > 0 && item.healLife <= 0 && item.healMana <= 0
             : (item) => item.type == ItemID.WormholePotion || item.type == ItemID.RecallPotion;
 
-        public override string Texture => "PotionSlots/Assets/wormhole_sprite";
-        public override string TextureFilled => "PotionSlots/Assets/wormholebg";
+        public override string Texture => "PotionSlotsUpdated/Assets/wormhole_sprite";
+        public override string TextureFilled => "PotionSlotsUpdated/Assets/wormholebg";
     }
 }

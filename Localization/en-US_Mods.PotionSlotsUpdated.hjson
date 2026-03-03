@@ -24,6 +24,11 @@ Configs: {
 			Tooltip: When enabled, the third slot accepts any consumable buff potion instead of Wormhole/Recall Potions
 		}
 
+		AutoFillEmptySlots: {
+			Label: Auto-Fill Empty Slots
+			Tooltip: When enabled, picked up potions automatically fill empty slots. Beware: lesser potions may fill a slot unexpectedly.
+		}
+
 		OffsetX: {
 			Label: Horizontal Offset
 			Tooltip: Shift all slots left or right

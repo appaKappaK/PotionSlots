@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
-namespace PotionSlots.Core
+namespace PotionSlotsUpdated.Core
 {
     public class PotionSlotsConfig : ModConfig
     {
@@ -20,6 +20,9 @@ namespace PotionSlots.Core
 
         [DefaultValue(false)]
         public bool WormholeSlotAsBuff { get; set; }
+
+        [DefaultValue(false)]
+        public bool AutoFillEmptySlots { get; set; }
 
         [DefaultValue(0)]
         [Range(-300, 300)]

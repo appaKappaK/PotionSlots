@@ -1,13 +1,13 @@
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Graphics;
-global using PotionSlots.Core;
+global using PotionSlotsUpdated.Core;
 global using Terraria;
 global using Terraria.Localization;
 global using Terraria.ModLoader;
 
-namespace PotionSlots
+namespace PotionSlotsUpdated
 {
-	public class PotionSlots : Mod
+	public class PotionSlotsUpdated : Mod
 	{
 	}
 }

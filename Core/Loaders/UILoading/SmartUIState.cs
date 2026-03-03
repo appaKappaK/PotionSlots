@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.UI;
 
-namespace PotionSlots.Core.Loaders.UILoading
+namespace PotionSlotsUpdated.Core.Loaders.UILoading
 {
 	/// <summary>
 	/// An auto-loaded UI State, that knows information about its own visibility.
