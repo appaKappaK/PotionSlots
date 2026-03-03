@@ -18,6 +18,9 @@ namespace PotionSlots.Core
         [DefaultValue(true)]
         public bool ShowWormholeSlot { get; set; }
 
+        [DefaultValue(false)]
+        public bool WormholeSlotAsBuff { get; set; }
+
         [DefaultValue(0)]
         [Range(-300, 300)]
         public int OffsetX { get; set; }

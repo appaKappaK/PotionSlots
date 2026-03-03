@@ -1,12 +1,5 @@
 # This file will automatically update with entries for new content after a build and reload
 
-Items: {
-	DebugStick: {
-		DisplayName: Debug Stick
-		Tooltip: ""
-	}
-}
-
 Configs: {
 	PotionSlotsConfig: {
 		DisplayName: Potion Slots Config
@@ -24,6 +17,11 @@ Configs: {
 		ShowWormholeSlot: {
 			Label: Show Wormhole/Recall Slot
 			Tooltip: Also accepts Recall Potions for singleplayer
+		}
+
+		WormholeSlotAsBuff: {
+			Label: Utility Slot: General Buff Mode
+			Tooltip: When enabled, the third slot accepts any consumable buff potion instead of Wormhole/Recall Potions
 		}
 
 		OffsetX: {

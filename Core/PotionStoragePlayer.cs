@@ -53,7 +53,9 @@ namespace PotionSlots.Core
                 TryFillSlot(ref p.lifeSlot, newItem);
             else if (newItem.healMana > 0)
                 TryFillSlot(ref p.manaSlot, newItem);
-            else if (newItem.type == ItemID.WormholePotion || newItem.type == ItemID.RecallPotion)
+            else if (PotionSlotsConfig.Instance.WormholeSlotAsBuff
+                     ? newItem.consumable && newItem.buffType > 0 && newItem.healLife <= 0 && newItem.healMana <= 0
+                     : newItem.type == ItemID.WormholePotion || newItem.type == ItemID.RecallPotion)
                 TryFillSlot(ref p.wormholeSlot, newItem);
 
             return orig(self, whoAmI, newItem, settings);

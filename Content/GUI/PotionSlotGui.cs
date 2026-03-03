@@ -219,7 +219,9 @@ namespace PotionSlots.Content.GUI
     {
         public override ref Item item => ref Main.LocalPlayer.GetModPlayer<PotionStoragePlayer>().wormholeSlot;
 
-        public override Func<Item, bool> isValid => (item) => item.type == ItemID.WormholePotion || item.type == ItemID.RecallPotion;
+        public override Func<Item, bool> isValid => PotionSlotsConfig.Instance.WormholeSlotAsBuff
+            ? (item) => item.consumable && item.buffType > 0 && item.healLife <= 0 && item.healMana <= 0
+            : (item) => item.type == ItemID.WormholePotion || item.type == ItemID.RecallPotion;
 
         public override string Texture => "PotionSlots/Assets/wormhole_sprite";
         public override string TextureFilled => "PotionSlots/Assets/wormholebg";
