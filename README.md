@@ -26,6 +26,6 @@ Requires tModLoader 1.4.4. Built on net8.
 
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3234262967)
 
-**Credits**: Dice (original mod) · scalarvector (commission art) · appaKappaK (maintenance & updates)
+**Credits**: Dice (original mod) · scalarvector (commission art) 
 
 Join our Discord for updates/announcements: [https://discord.gg/te6MPuWbtD](https://discord.gg/te6MPuWbtD)
