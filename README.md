@@ -22,8 +22,8 @@ Adds dedicated inventory slots for your potions so they stay out of your hotbar.
 
 ### Compatibility
 
-Requires tModLoader 1.4.4. Built on net8.
+Requires tModLoader 2026.1. Built on net8.
 
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3234262967)
 
-**Credits**: Dice (original mod) · scalarvector (commission art) 
+**Credits**: Dice (original mod) · appaK (updated) · scalarvector (commission art)
