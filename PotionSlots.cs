@@ -5,8 +5,6 @@ global using Terraria;
 global using Terraria.Localization;
 global using Terraria.ModLoader;
 
-using Terraria.ModLoader;
-
 namespace PotionSlots
 {
 	public class PotionSlots : Mod
